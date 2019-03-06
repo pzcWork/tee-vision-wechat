@@ -1,0 +1,196 @@
+<style lang="less">
+.container_in{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.container_in2{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  height: 100%;
+}
+.imgTittle_out{
+  width: 660rpx;
+  height: 560rpx;
+  margin: 0 auto;
+  border-radius: 40rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;
+  margin-top: 20rpx;
+}
+.imgTittle{
+}
+.resItem_out{
+  width: 660rpx;
+  height: 160rpx;
+  background-color: #fff;
+  border-radius: 25rpx;
+  margin-top: 20rpx;
+  font-size: 23rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+}
+.resItem{
+  width: 660rpx;
+  height: 180rpx;
+  display: flex;
+  justify-content: space-around;
+}
+.resItem_img1{
+  width: 178rpx;
+  height: 178rpx;
+}
+.resItem>view{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-right: 20rpx;
+}
+.resItem>view:first-child{
+  width: 350rpx;
+  margin: 0 20rpx;
+}
+.resItem_name{
+  
+}
+.resItem_detail{
+  
+}
+.resItem_img{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.resItem_img_copy{
+
+}
+</style>
+<template>
+  <view class="container" style="background:url('https://ai.tee.com/shopping/images/wx_compare.png');background-repeat:no-repeat;background-position-y:265%;">
+    <view wx:if="{{ choseImgData.data.data.data }}" class="container_in">
+      <view class="imgTittle_out">
+        <image src="{{ choseImgsrc.data }}" class="imgTittle" style="height:{{ imgHeight }};width:{{ imgWidth }}"/>
+      </view>  
+      <repeat for="{{ choseImgData.data.data.data }}">
+        <view class="resItem_out">
+          <view bindtap='tonavigat' data-tourl='{{ item.url }}' class="resItem">
+            <view class="resItem_name">{{item.name}}</view>
+            <view class="resItem_detail">
+              <view class="resItem_pro">产品信息</view>
+              <view class="resItem_price">价格： ￥{{item.price}}</view>
+            </view>
+            <view class="resItem_img" bindtap='copyBtn({{item.url}})'>
+              <image src="{{item.image}}" class="resItem_img1" />
+              <text class="resItem_img_copy">点击复制链接</text>
+            </view>
+          </view>
+          <!-- <view>
+            <label class='lab_copy' bindtap='copyBtn'>复制链接</label>
+          </view> -->
+        </view>
+      </repeat>
+    </view>
+    <view wx:else class="container_in2">
+      <view>404 NOT FOUND</view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '买拍宝'
+    }
+    components = {
+    }
+
+    data = {
+      title: 1,
+      uploadimage: '',
+      choseImgData: {
+      },
+      choseImgsrc: {},
+      imgHeight: '',
+      imgWidth: ''
+    }
+
+    computed = {
+    }
+
+    methods = {
+      tonavigat (e) {
+        // let tourl = e.currentTarget.dataset.tourl
+        // console.log(tourl)
+        // wepy.navigateTo({
+        //   url: '/pages/tonavigat?url=' + tourl
+        // })
+      },
+      copyBtn: function (url) {
+        // let that = this
+        console.log(url)
+        wx.setClipboardData({
+          // 准备复制的数据
+          data: url,
+          success: function (res) {
+            wx.showToast({
+              title: '复制成功'
+            })
+          }
+        })
+      }
+    }
+    // watch = {
+    //   choseImgsrc (curVal, oldVal) {
+    //     console.log('2222222222')
+    //     console.log(`旧值：${oldVal}，新值：${curVal}`)
+    //   }
+    // }
+    onLoad () {
+      // this.uploadimage = data.preload.uploadimage
+      // console.log(data.preload.uploadimage)
+      var _that = this
+      wx.getStorage({
+        key: 'choseImgData',
+        success: function (res) {
+          _that.choseImgData = res
+        }
+      })
+      wx.getStorage({
+        key: 'choseImgsrc',
+        success: function (res) {
+          let Imgsrc = res
+          wx.getImageInfo({
+            src: Imgsrc.data,
+            success: function (res) {
+              let params = res.width / res.height
+              _that.imgWidth = '660rpx'
+              _that.imgHeight = '560rpx'
+              if (params > 1.17858143) {
+                _that.imgWidth = '640rpx'
+                _that.imgHeight = (660 / params) + 'rpx'
+                console.log(_that.imgWidth, _that.imgHeight)
+              } else if (params < 1.17858143) {
+                _that.imgHeight = '560rpx'
+                _that.imgWidth = (560 * params) + 'rpx'
+                // console.log(_that.imgWidth)
+              } else {
+                _that.imgHeight = '560rpx'
+                _that.imgWidth = '660rpx'
+              }
+              _that.choseImgsrc = Imgsrc
+              _that.$apply()
+            }
+          })
+        }
+      })
+    }
+  }
+</script>

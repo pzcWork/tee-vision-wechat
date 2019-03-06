@@ -1,0 +1,21 @@
+
+  <view class="container">
+      <!-- camera.wxml -->
+      <camera device-position="back" flash="off" binderror="error" style="width: 100%; height: calc(100% - 200rpx);"/>
+      <view class="checkGroup">
+        <view class="checkGroupFlex" animation="{{animationData}}">
+          <view class="{{checkStyle === 0?'checkStyle':''}}" bindtap="checkItem" data-wpycheckitem-a="0">商品</view>
+          <view class="{{checkStyle === 2?'checkStyle':''}}" bindtap="checkItem" data-wpycheckitem-a="2">食品</view>
+        </view>
+      </view>
+      <view class="btnGroup">
+        <view class="btnGroup_photo" bindtap="selectPic" style="background:url('https://ai.tee.com/shopping/images/wx_photo.png');background-repeat:no-repeat;background-size:100% 100%;"/>
+        <view class="btnGroup_shoot" bindtap="takePhoto" style="background:url('https://ai.tee.com/shopping/images/wx_shoot.png');background-repeat:no-repeat;background-size:100% 100%;"/>
+        <!-- <button type="primary" bindtap="selectPic" class="takePhoto">相册</button>
+        <button type="primary" bindtap="takePhoto" class="takePhoto">拍照</button> -->
+        <!-- <button type="primary" bindtap="takePhoto1" class="takePhoto">拍照1</button> -->
+        <!-- <button type="primary" bindtap="takePhoto" class="takePhoto">会员</button> -->
+      </view>
+      <!-- <view>预览</view>
+      <image mode="widthFix" src="{{preSrc}}" /> -->
+  </view>

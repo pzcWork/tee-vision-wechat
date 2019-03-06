@@ -1,0 +1,279 @@
+<style lang="less">
+.container{
+  background-color: #000;
+}
+.btnGroup{
+  height: 120rpx;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.checkGroup{
+  height: 80rpx;
+  width: 100%;
+  line-height: 100rpx;
+  position: relative;
+}
+.checkGroupFlex{
+  position: absolute;
+  color: #666666;
+  left: 340rpx;
+}
+.checkGroupFlex > view{
+  float: left;
+}
+.checkGroupFlex > view:nth-child(2){
+  margin-left: 50rpx;
+}
+.takePhoto{
+  width: 140rpx;
+  font-size: 32rpx;
+  color: #fff;
+  height: 80rpx;
+}
+.checkStyle{
+  color: #fff;
+}
+.btnGroup_photo, .btnGroup_shoot{
+  width: 58rpx;
+  height: 58rpx;
+}
+.btnGroup_shoot{
+  margin-left: -280rpx;
+}
+</style>
+<template>
+  <view class="container">
+      <!-- camera.wxml -->
+      <camera
+        device-position="back"
+        flash="off"
+        binderror="error"
+        style="width: 100%; height: calc(100% - 200rpx);"
+      ></camera>
+      <view class="checkGroup">
+        <view class="checkGroupFlex" animation="{{animationData}}">
+          <view class="{{checkStyle === 0?'checkStyle':''}}" bindtap="checkItem(0)">商品</view>
+          <view class="{{checkStyle === 2?'checkStyle':''}}" bindtap="checkItem(2)">食品</view>
+        </view>
+      </view>
+      <view class="btnGroup">
+        <view class="btnGroup_photo" bindtap="selectPic" style="background:url('https://ai.tee.com/shopping/images/wx_photo.png');background-repeat:no-repeat;background-size:100% 100%;"></view>
+        <view class="btnGroup_shoot" bindtap="takePhoto" style="background:url('https://ai.tee.com/shopping/images/wx_shoot.png');background-repeat:no-repeat;background-size:100% 100%;"></view>
+        <!-- <button type="primary" bindtap="selectPic" class="takePhoto">相册</button>
+        <button type="primary" bindtap="takePhoto" class="takePhoto">拍照</button> -->
+        <!-- <button type="primary" bindtap="takePhoto1" class="takePhoto">拍照1</button> -->
+        <!-- <button type="primary" bindtap="takePhoto" class="takePhoto">会员</button> -->
+      </view>
+      <!-- <view>预览</view>
+      <image mode="widthFix" src="{{preSrc}}" /> -->
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '买拍宝 商品搜索'
+    }
+    components = {
+    }
+
+    data = {
+      title: 1,
+      checkStyle: 0,
+      animationData: {}
+    }
+
+    computed = {
+    }
+
+    methods = {
+      checkItem(val) {
+        this.checkStyle = val - 0
+        var animation = wx.createAnimation({
+          duration: 100,
+          timingFunction: 'linear'
+        })
+        if (this.checkStyle === 2) {
+          animation.translateX(-60).step()
+          // animation.translateY(100).step()
+          // animation.left(200).top(0).step()
+          this.setData({
+            animationData: animation.export()
+          })
+        } else if (this.checkStyle === 0) {
+          animation.translateX(0).step()
+          // animation.translateY(100).step()
+          // animation.left(200).top(0).step()
+          this.setData({
+            animationData: animation.export()
+          })
+        }
+      },
+      selectPic() {
+        let _that = this
+        wx.chooseImage({
+          sizeType: ['original', 'compressed'],
+          sourceType: ['album'],
+          success: function (res) {
+            wx.setStorage({
+              key: 'choseImgsrc',
+              data: res.tempFilePaths[0]
+            })
+            wx.showLoading({
+              mask: true,
+              title: '加载中,请稍等'
+            })
+            const tempFilePaths = res.tempFilePaths
+            const fs = wx.getFileSystemManager()
+            fs.readFile({
+              filePath: tempFilePaths[0],
+              encoding: 'base64',
+              success: function(data) {
+                const da = data.data
+                wx.request({
+                  url: 'https://ai.tee.com/shopping',
+                  method: 'POST',
+                  data: {
+                    content: da,
+                    randomValue: Date.parse(new Date()),
+                    db_id: 101,
+                    code: 101,
+                    classid: _that.checkStyle
+                  },
+                  header: {
+                    'content-type': 'application/x-www-form-urlencoded'
+                  },
+                  success: function(res) {
+                    wx.setStorage({
+                      key: 'choseImgData',
+                      data: res
+                    })
+                    wx.hideLoading({
+                      title: '加载中'
+                    })
+                    wepy.navigateTo({
+                      url: '/pages/clothing'
+                    })
+                  }
+                })
+              }
+            })
+          }
+        })
+      },
+      takePhoto1() {
+        let _that = this
+        wx.chooseImage({
+          sizeType: ['original', 'compressed'],
+          sourceType: ['camera'],
+          success: function (res) {
+            wx.setStorage({
+              key: 'choseImgsrc',
+              data: res.tempFilePaths[0]
+            })
+            wx.showLoading({
+              mask: true,
+              title: '加载中,请稍等'
+            })
+            const tempFilePaths = res.tempFilePaths
+            const fs = wx.getFileSystemManager()
+            fs.readFile({
+              filePath: tempFilePaths[0],
+              encoding: 'base64',
+              success: function(data) {
+                const da = data.data
+                wx.request({
+                  url: 'https://ai.tee.com/shopping',
+                  method: 'POST',
+                  data: {
+                    content: da,
+                    randomValue: Date.parse(new Date()),
+                    db_id: 101,
+                    code: 101,
+                    classid: _that.checkStyle
+                  },
+                  header: {
+                    'content-type': 'application/x-www-form-urlencoded'
+                  },
+                  success: function(res) {
+                    wx.setStorage({
+                      key: 'choseImgData',
+                      data: res
+                    })
+                    wx.hideLoading({
+                      title: '加载中'
+                    })
+                    wepy.navigateTo({
+                      url: '/pages/clothing'
+                    })
+                  }
+                })
+              }
+            })
+          }
+        })
+      },
+      takePhoto() {
+        wx.showLoading({
+          mask: true,
+          title: '加载中,请稍等'
+        })
+        let _that = this
+        const ctx = wx.createCameraContext()
+        ctx.takePhoto({
+          quality: 'low',
+          success: (res) => {
+            const tempImagePath = res.tempImagePath
+            const fs = wx.getFileSystemManager()
+            wx.setStorage({
+              key: 'choseImgsrc',
+              data: res.tempImagePath
+            })
+            fs.readFile({
+              filePath: tempImagePath,
+              encoding: 'base64',
+              success: function(data) {
+                const da = data.data
+                wx.request({
+                  url: 'https://ai.tee.com/shopping',
+                  method: 'POST',
+                  data: {
+                    content: da,
+                    randomValue: Date.parse(new Date()),
+                    db_id: 101,
+                    code: 101,
+                    classid: _that.checkStyle
+                  },
+                  header: {
+                    'content-type': 'application/x-www-form-urlencoded'
+                  },
+                  success: function(res) {
+                    // console.log(res)
+                    wx.setStorage({
+                      key: 'choseImgData',
+                      data: res
+                    })
+                    wx.hideLoading({
+                      title: '加载中'
+                    })
+                    wepy.navigateTo({
+                      url: '/pages/clothing'
+                    })
+                  }
+                })
+              }
+            })
+            // this.setData({ 图片预览
+            //   preSrc: res.tempImagePath
+            // })
+          }
+        })
+      },
+      error(e) {
+        console.log(e.detail)
+      }
+    }
+  }
+</script>

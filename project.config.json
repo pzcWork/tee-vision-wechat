@@ -1,0 +1,16 @@
+{
+	"description": "A WePY project",
+	"setting": {
+		"urlCheck": true,
+		"es6": false,
+		"postcss": true,
+		"minified": false,
+		"newFeature": true,
+		"autoAudits": false
+	},
+	"compileType": "miniprogram",
+	"appid": "wx0ae8ecfd78df0279",
+	"projectname": "tee-vision-wechat",
+	"miniprogramRoot": "dist/",
+	"condition": {}
+}

@@ -1,0 +1,43 @@
+.container {
+  background-color: #000;
+}
+.btnGroup {
+  height: 120rpx;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.checkGroup {
+  height: 80rpx;
+  width: 100%;
+  line-height: 100rpx;
+  position: relative;
+}
+.checkGroupFlex {
+  position: absolute;
+  color: #666666;
+  left: 340rpx;
+}
+.checkGroupFlex > view {
+  float: left;
+}
+.checkGroupFlex > view:nth-child(2) {
+  margin-left: 50rpx;
+}
+.takePhoto {
+  width: 140rpx;
+  font-size: 32rpx;
+  color: #fff;
+  height: 80rpx;
+}
+.checkStyle {
+  color: #fff;
+}
+.btnGroup_photo,
+.btnGroup_shoot {
+  width: 58rpx;
+  height: 58rpx;
+}
+.btnGroup_shoot {
+  margin-left: -280rpx;
+}
